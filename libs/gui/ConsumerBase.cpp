@@ -313,6 +313,7 @@ status_t ConsumerBase::addReleaseFenceLocked(int slot,
     }
 
     if (!mSlots[slot].mFence.get()) {
+#ifndef MTK_HARDWARE
         mSlots[slot].mFence = fence;
         return OK;
     }
@@ -325,7 +326,6 @@ status_t ConsumerBase::addReleaseFenceLocked(int slot,
     }
 
     if (*signaled) {
-#ifndef MTK_HARDWARE
         mSlots[slot].mFence = fence;
     } else {
         char fenceName[32] = {};
