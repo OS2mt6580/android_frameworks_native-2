@@ -16,7 +16,11 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_CLANG := true
+ifneq ($(BOARD_HAS_MTK_HARDWARE),true)
 LOCAL_CPPFLAGS := -std=c++1y -Weverything -Werror
+else
+LOCAL_CPPFLAGS := -std=c++1y -Weverything
+endif
 # LOCAL_SANITIZE := integer
 
 # The static constructors and destructors in this library have not been noted to
@@ -55,6 +59,20 @@ LOCAL_SHARED_LIBRARIES := \
 	libsync \
 	libutils \
 	liblog
+
+ifeq ($(BOARD_HAS_MTK_HARDWARE),true)
+LOCAL_CFLAGS += -DMTK_HARDWARE
+LOCAL_CPPFLAGS += -Wno-extra-semi -Wno-zero-length-array -Wno-gnu-statement-expression
+LOCAL_CPPFLAGS += -D__STDC_FORMAT_MACROS
+
+LOCAL_SRC_FILES += \
+	mediatek/Fence.cpp \
+	mediatek/IDumpTunnel.cpp \
+	mediatek/RefBaseDump.cpp
+
+LOCAL_SHARED_LIBRARIES += \
+	libbinder
+endif
 
 ifneq ($(BOARD_FRAMEBUFFER_FORCE_FORMAT),)
 LOCAL_CFLAGS += -DFRAMEBUFFER_FORCE_FORMAT=$(BOARD_FRAMEBUFFER_FORCE_FORMAT)

@@ -305,13 +305,13 @@ int Surface::dequeueBuffer(android_native_buffer_t** buffer, int* fenceFd) {
                 reqUsage, result);
         return result;
     }
-
+#ifndef MTK_HARDWARE
     if (buf < 0 || buf >= NUM_BUFFER_SLOTS) {
         ALOGE("dequeueBuffer: IGraphicBufferProducer returned invalid slot number %d", buf);
         android_errorWriteLog(0x534e4554, "36991414"); // SafetyNet logging
         return FAILED_TRANSACTION;
     }
-
+#endif
     Mutex::Autolock lock(mMutex);
 
     sp<GraphicBuffer>& gbuf(mSlots[buf].buffer);
